@@ -1,0 +1,133 @@
+<template>
+    <div class="container">
+        <div class="container-fluid">
+            <div class="row mt-5">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">User </h3>
+                            <div class="card-tools">
+                                <button class="btn btn-success" data-toggle="modal" data-target="#addNew">Add new <i class="fa fa-user-plus fa-fw"></i></button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0">
+                            <table class="table table-hover text-nowrap">
+                            <thead>
+                                <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Type</th>
+                                <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="user in users" :key="user.id">
+                                    <td>{{user.id}}</td>
+                                    <td>{{}}</td>
+                                    <td>11-7-2014</td>
+                                    <td><span class="tag tag-success">Approved</span></td>
+                                    <td>
+                                        <a href="">
+                                            <i class="fa fa-edit green"></i>
+                                        </a>
+                                        <a href="">
+                                            <i class="fa fa-trash red"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="addNew" tabindex="-1" aria-labelledby="addNewLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addNewLabel">Add New</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form @submit.prevent="createUser">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <!-- <label for="username" class="form-label">username</label> -->
+                                <input id="name" v-model="form.name" placeholder="Name" type="text" name="name" class="form-control">
+                                <HasError :form="form" field="name" />
+                            </div>
+                            <div class="mb-3">
+                                <!-- <label for="username" class="form-label">username</label> -->
+                                <input id="email" v-model="form.email" placeholder="Email Address" type="text" name="email" class="form-control">
+                                <HasError :form="form" field="email" />
+                            </div>
+                            <div class="mb-3">
+                                <!-- <label for="username" class="form-label">username</label> -->
+                                <textarea id="bio" v-model="form.bio" placeholder="Short bio for user (Optional)" type="text" name="bio" class="form-control"></textarea>
+                                <HasError :form="form" field="bio" />
+                            </div>
+                            <div class="mb-3">
+                                <!-- <label for="username" class="form-label">username</label> -->
+                                <select id="type" v-model="form.type" type="text" name="type" class="form-control">
+                                    <option value="">Select User Role</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="user">Standard</option>
+                                    <option value="author">Author</option>
+                                </select>
+                                <HasError :form="form" field="type" />
+                            </div>
+                            <div class="mb-3">
+                                <!-- <label for="username" class="form-label">username</label> -->
+                                <input id="password" v-model="form.password" placeholder="Password" type="password" name="password" class="form-control">
+                                <HasError :form="form" field="password" />
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+      
+        data() {
+            return {
+                users: {},
+                form: new Form({
+                    name: '',
+                    email: '',
+                    password: '',
+                    type: '',
+                    bio: '',
+                    photo: ''
+                })
+            }
+        },
+        methods: {
+            loadUser(){
+                axios.get('api/user')
+                .then(({data})  => (this.users = data));
+            },
+            createUser() {
+                this.form.post('api/user');
+            }
+        },
+        created() {
+            $this.loadUser();
+        }
+        
+    }
+</script>
